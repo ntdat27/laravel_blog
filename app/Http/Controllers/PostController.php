@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -12,9 +13,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // Lấy tất cả bài viết, bài mới nhất lên đầu
+        // Nếu muốn hiển thị tên tác giả thì thêm with('user')
+        $posts = Post::with('user')->latest()->get();
 
+        // Trả về view 'welcome' kèm theo gói hàng 'posts'
+        return view('welcome', compact('posts'));
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -28,7 +33,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = \App\Models\Post::with("comments.user")->findOrFail($id);
+        return view('posts.show', compact('post'));
     }
 
     /**
